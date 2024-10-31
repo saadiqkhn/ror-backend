@@ -1,5 +1,9 @@
 name: GCP Compute Engine Deployment
 
+env:
+  CLOUDSDK_CORE_LOGGING_VERBOSITY: "debug"
+
+
 on:
   push:
     branches:

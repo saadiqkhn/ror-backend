@@ -29,20 +29,19 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
-
     - name: Build Docker Image
-      run: docker build -t gcr.io/studied-flow-384916/ror-backend:$GITHUB_SHA .
+      run: docker build -t us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA .
 
-    - name: Push Docker Image to Google Container Registry
+    - name: Push Docker Image to Artifact Registry
       run: |
-        gcloud auth configure-docker gcr.io
-        docker push gcr.io/studied-flow-384916/ror-backend:$GITHUB_SHA
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+        docker push us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA
 
     - name: Deploy to Compute Engine
       run: |
         gcloud compute ssh my-learning --zone=us-central1-c --command "
-          docker pull gcr.io/studied-flow-384916/ror-backend:$GITHUB_SHA &&
+          docker pull us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA &&
           docker stop ror-backend || true &&
           docker rm ror-backend || true &&
-          docker run -d -p 80:3000 --name ror-backend gcr.io/studied-flow-384916/ror-backend:$GITHUB_SHA
+          docker run -d -p 80:3000 --name ror-backend us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA
         "

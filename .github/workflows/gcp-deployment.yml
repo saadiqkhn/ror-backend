@@ -35,7 +35,7 @@ jobs:
 
     - name: Push Docker Image to Google Container Registry
       run: |
-        gcloud auth configure-docker
+        gcloud auth configure-docker gcr.io
         docker push gcr.io/studied-flow-384916/ror-backend:$GITHUB_SHA
 
     - name: Deploy to Compute Engine

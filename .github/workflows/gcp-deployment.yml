@@ -46,11 +46,14 @@ jobs:
       run: |
        gcloud auth activate-service-account github-actions-sa@studied-flow-384916.iam.gserviceaccount.com --key-file=$HOME/gcloud-key.json
        gcloud config set account github-actions-sa@studied-flow-384916.iam.gserviceaccount.com
+       gcloud auth configure-docker us-central1-docker.pkg.dev
        gcloud compute ssh my-learning --zone=us-central1-c --tunnel-through-iap --project=studied-flow-384916 --command "
-       sudo docker pull us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA &&
-       sudo docker stop ror-backend || true &&
-       sudo docker rm ror-backend || true &&
-       sudo docker run -d -p 80:3000 --name ror-backend us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA
+       gcloud auth configure-docker us-central1-docker.pkg.dev &&
+       docker pull us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA &&
+       docker stop ror-backend || true &&
+       docker rm ror-backend || true &&
+       docker run -d -p 80:3000 --name ror-backend us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA
        "
+
 
 

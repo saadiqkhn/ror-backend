@@ -42,15 +42,6 @@ jobs:
     - name: Push Docker Image to Artifact Registry
       run: docker push us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA
 
-    # Set up the SSH key for access to Compute Engine
-    - name: Set up SSH key
-      run: |
-        echo "${{ secrets.GCP_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        eval "$(ssh-agent -s)"
-        ssh-add ~/.ssh/id_rsa
-
-    # Deploy to Compute Engine
     - name: Deploy to Compute Engine
       run: |
         gcloud compute ssh my-learning --zone=us-central1-c --command "

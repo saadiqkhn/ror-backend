@@ -19,8 +19,9 @@ COPY . .
 # Precompile assets (optional if the app has frontend assets)
 RUN bundle exec rake assets:precompile
 
-# Expose the app on port 3000
-EXPOSE 3000
+# Expose the app on port 8080 for Cloud Run compatibility
+EXPOSE 8080
 
-# Start the Rails server
-CMD ["rails", "server", "-b", "0.0.0.0"]
+# Start the Rails server on port 8080
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "8080"]
+

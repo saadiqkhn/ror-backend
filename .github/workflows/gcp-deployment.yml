@@ -7,8 +7,8 @@ env:
 on:
   push:
     branches:
-      - main  # Change this to the branch you want to deploy from
-  workflow_dispatch:  # Allows you to manually trigger the workflow
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -53,5 +53,5 @@ jobs:
           sudo docker pull us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA &&
           sudo docker stop ror-backend || true &&
           sudo docker rm ror-backend || true &&
-          sudo docker run -d -p 80:3000 --name ror-backend us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA
+          sudo docker run -d -p 80:8080 --name ror-backend us-central1-docker.pkg.dev/studied-flow-384916/ror-backend/ror-backend:$GITHUB_SHA
         "

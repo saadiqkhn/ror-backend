@@ -1,24 +1,34 @@
-# Use an official Ruby runtime as a parent image
-FROM ruby:3.0
+name: GCP Cloud Run Deployment
 
-# Install dependencies
-RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
+on:
+  push:
+    branches:
+      - main
 
-# Set the working directory
-WORKDIR /app
+jobs:
+  deploy:
+    name: Deploy to Google Cloud Run
+    runs-on: ubuntu-latest
 
-# Copy the Gemfile and install gems
-COPY Gemfile* /app/
-RUN bundle install
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-# Copy the Rails application
-COPY . /app
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ror-deployment-440909
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          export_default_credentials: true
 
-# Precompile assets for production (optional)
-RUN RAILS_ENV=production bundle exec rake assets:precompile
+      - name: Build Docker Image
+        run: docker build -t gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA .
 
-# Expose the Rails server port
-EXPOSE 3000
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ror-backend-service \
+            --image gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated
 
-# Start the Rails server
-CMD ["rails", "server", "-b", "0.0.0.0"]

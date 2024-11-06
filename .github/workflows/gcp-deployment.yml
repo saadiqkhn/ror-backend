@@ -1,4 +1,4 @@
-name: CI/CD for Rails App on Cloud Run
+name: GCP Cloud Run Deployment
 
 on:
   push:
@@ -6,39 +6,29 @@ on:
       - main
 
 jobs:
-  test-and-deploy:
+  deploy:
+    name: Deploy to Google Cloud Run
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
         with:
-          ruby-version: 3.0
+          project_id: ror-deployment-440909
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          export_default_credentials: true
 
-      - name: Install dependencies
-        run: |
-          gem install bundler
-          bundle install
-
-      - name: Run tests
-        run: |
-          bundle exec rails test
-
-      - name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v0
-        with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Build Docker Image
+        run: docker build -t gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA .
 
       - name: Deploy to Cloud Run
-        env:
-          PROJECT_ID: your-project-id
         run: |
-          gcloud config set project $PROJECT_ID
-          gcloud run deploy ror-service \
-            --source . \
+          gcloud run deploy ror-backend-service \
+            --image gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA \
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated
+

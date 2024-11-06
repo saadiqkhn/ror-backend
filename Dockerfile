@@ -1,5 +1,3 @@
-name: GCP Cloud Run Deployment
-
 on:
   push:
     branches:

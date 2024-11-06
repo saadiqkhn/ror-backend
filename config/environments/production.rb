@@ -113,3 +113,5 @@ Rails.application.configure do
   ]
   config.assets.compile = true
 end
+config.active_storage.service = :google
+

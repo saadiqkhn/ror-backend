@@ -4,3 +4,12 @@ amazon:
   secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
   region: us-east-1
   bucket: <%= ENV['AWS_BUCKET_NAME'] %>
+
+google:
+  service: GCS
+  project: ror-deployment-440909
+  credentials: <%= 
+Rails.root.join("/Users/apple/Downloads/ror-deployment-440909-c30e6655ca83.json") %>
+  bucket: "ror-deployment-bucket"
+  path: "/"
+

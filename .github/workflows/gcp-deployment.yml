@@ -20,8 +20,11 @@ jobs:
           project_id: ror-deployment-440909
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           export_default_credentials: true
-      - name: Configure gcloud Account
+      
+      - name: Configure gcloud Account and Activate Service Account
         run: |
+          echo "${{ secrets.GCP_CREDENTIALS }}" > $HOME/gcloud-key.json
+          gcloud auth activate-service-account github-actions-deployer@ror-deployment-440909.iam.gserviceaccount.com --key-file=$HOME/gcloud-key.json
           gcloud config set account github-actions-deployer@ror-deployment-440909.iam.gserviceaccount.com
           gcloud config set project ror-deployment-440909
 

@@ -25,7 +25,10 @@ jobs:
         run: docker build -t gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA .
 
       - name: Deploy to Cloud Run
+        env:
+          PROJECT_ID: ror-deployment-440909
         run: |
+          gcloud config set project $PROJECT_ID
           gcloud run deploy ror-backend-service \
             --image gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA \
             --platform managed \

@@ -19,9 +19,6 @@ COPY . .
 # Set the Rails environment to production for Cloud Run
 ENV RAILS_ENV production
 
-# Precompile assets (optional if the app has frontend assets)
-RUN bundle exec rake assets:precompile
-
 # Expose the app on port 8080 for Cloud Run compatibility
 EXPOSE 8080
 

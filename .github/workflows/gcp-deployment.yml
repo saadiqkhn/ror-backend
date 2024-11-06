@@ -30,15 +30,14 @@ jobs:
           gcloud config set account github-actions-deployer@ror-deployment-440909.iam.gserviceaccount.com
           gcloud config set project ror-deployment-440909
 
-      - name: Build Docker Image
-        run: docker build -t gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA .
-
-      - name: Deploy to Cloud Run
+      # Deploy directly to Cloud Run from source
+      - name: Deploy to Cloud Run from Source
         run: |
           gcloud run deploy ror-backend-service \
-            --image gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA \
+            --source . \
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated
+
 
 

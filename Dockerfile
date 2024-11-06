@@ -1,32 +1,31 @@
-on:
-  push:
-    branches:
-      - main
+# Use the official Ruby image as the base
+FROM ruby:3.1.0
 
-jobs:
-  deploy:
-    name: Deploy to Google Cloud Run
-    runs-on: ubuntu-latest
+# Install dependencies
+RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+# Set the working directory
+WORKDIR /app
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: ror-deployment-440909
-          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
-          export_default_credentials: true
+# Copy the Gemfile and Gemfile.lock
+COPY Gemfile Gemfile.lock ./
 
-      - name: Build Docker Image
-        run: docker build -t gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA .
+# Install gems
+RUN bundle install
 
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy ror-backend-service \
-            --image gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA \
-            --platform managed \
-            --region us-central1 \
-            --allow-unauthenticated
+# Copy the application code
+COPY . .
+
+# Set the Rails environment to production for Cloud Run
+ENV RAILS_ENV production
+
+# Precompile assets (optional if the app has frontend assets)
+RUN bundle exec rake assets:precompile
+
+# Expose the app on port 8080 for Cloud Run compatibility
+EXPOSE 8080
+
+# Start the Rails server on port 8080
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "8080"]
+
 

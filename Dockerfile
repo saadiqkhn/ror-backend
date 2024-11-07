@@ -1,9 +1,11 @@
 # Use the official Ruby image as the base
 FROM ruby:3.1.0
 
-# Use a different Debian mirror and install dependencies
-RUN sed -i 's|http://deb.debian.org|http://ftp.us.debian.org|g' /etc/apt/sources.list
-RUN apt-get update -qq && apt-get install -y --fix-missing nodejs postgresql-client
+# Install dependencies using NodeSource for Node.js
+RUN apt-get update -qq && \
+    apt-get install -y --fix-missing curl gnupg postgresql-client && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs
 
 # Set the working directory
 WORKDIR /app

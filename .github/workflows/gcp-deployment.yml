@@ -1,4 +1,4 @@
-name: GCP Cloud Run Deployment
+name: Deploy to Cloud Run from Docker Hub
 
 on:
   push:
@@ -13,6 +13,15 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Authenticate to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t your-dockerhub-username/ror-backend:$GITHUB_SHA .
+
+      - name: Push Docker Image to Docker Hub
+        run: docker push your-dockerhub-username/ror-backend:$GITHUB_SHA
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v0
@@ -30,14 +39,14 @@ jobs:
           gcloud config set account github-actions-deployer@ror-deployment-440909.iam.gserviceaccount.com
           gcloud config set project ror-deployment-440909
 
-      # Deploy directly to Cloud Run from source
-      - name: Deploy to Cloud Run from Source
+      - name: Deploy to Cloud Run from Docker Hub
         run: |
           gcloud run deploy ror-backend-service \
-            --source . \
+            --image your-dockerhub-username/ror-backend:$GITHUB_SHA \
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated
+
 
 
 

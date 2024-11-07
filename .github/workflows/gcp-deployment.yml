@@ -18,10 +18,10 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t your-dockerhub-username/ror-backend:$GITHUB_SHA .
+        run: docker build -t saadiqkhn/ror-backend:$GITHUB_SHA .
 
       - name: Push Docker Image to Docker Hub
-        run: docker push your-dockerhub-username/ror-backend:$GITHUB_SHA
+        run: docker push saadiqkhn/ror-backend:$GITHUB_SHA
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v0

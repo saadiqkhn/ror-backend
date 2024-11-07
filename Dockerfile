@@ -1,5 +1,5 @@
 # Use a lightweight Ruby image
-FROM ruby:3.0.0-alpine
+FROM ruby:3.1.0-alpine
 
 # Install essential packages and dependencies
 RUN apk update && \

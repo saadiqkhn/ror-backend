@@ -3,8 +3,7 @@ FROM ruby:3.1.0
 
 # Install dependencies
 RUN apt-get update -qq && \
-    apt-get install -y --fix-missing curl gnupg build-essential libpq-dev \
-    libvips libffi-dev libyaml-dev imagemagick && \
+    apt-get install -y --fix-missing curl gnupg build-essential libpq-dev && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
@@ -37,8 +36,8 @@ RUN echo "DATABASE_URL=$DATABASE_URL" && \
     echo "SECRET_KEY_BASE=$SECRET_KEY_BASE" && \
     echo "RAILS_MASTER_KEY=$RAILS_MASTER_KEY"
 
-# Precompile assets (optional, commented out)
-# RUN bundle exec rake assets:precompile --trace
+# Precompile assets
+#RUN bundle exec rake assets:precompile --trace
 
 # Expose the app on port 8080 for Cloud Run compatibility
 EXPOSE 8080

@@ -37,7 +37,7 @@ RUN echo "DATABASE_URL=$DATABASE_URL" && \
     echo "RAILS_MASTER_KEY=$RAILS_MASTER_KEY"
 
 # Precompile assets
-RUN bundle exec rake assets:precompile --trace
+#RUN bundle exec rake assets:precompile --trace
 
 # Expose the app on port 8080 for Cloud Run compatibility
 EXPOSE 8080

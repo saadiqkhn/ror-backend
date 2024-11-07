@@ -42,7 +42,7 @@ jobs:
       - name: Deploy to Cloud Run from Docker Hub
         run: |
           gcloud run deploy ror-backend-service \
-            --image docker.io/saadiqkhn/ror-backend:$GITHUB_SHA \
+            --image docker.io/saadiqkhn/ror-backend:latest \
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated

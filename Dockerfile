@@ -3,9 +3,7 @@ FROM ruby:3.1.0
 
 # Install dependencies
 RUN apt-get update -qq && \
-    apt-get install -y --fix-missing curl gnupg postgresql-client && \
-    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install -y nodejs yarn
+    apt-get install -y --fix-missing curl gnupg build-essential libpq-dev nodejs yarn
 
 # Set the working directory
 WORKDIR /app
@@ -19,12 +17,17 @@ RUN bundle install
 # Copy the application code
 COPY . .
 
-# Set the Rails environment and placeholder DATABASE_URL
+# Install JavaScript dependencies with Yarn (for Webpacker)
+RUN yarn install
+
+# Set environment variables for precompilation
 ENV RAILS_ENV production
 ENV DATABASE_URL="postgres://user:password@localhost/dbname"
+ENV SECRET_KEY_BASE="dummysecretkey"
+ENV RAILS_MASTER_KEY="dummyrailskey"
 
 # Precompile assets
-RUN bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile --trace
 
 # Expose the app on port 8080 for Cloud Run compatibility
 EXPOSE 8080

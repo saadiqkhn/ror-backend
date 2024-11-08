@@ -30,11 +30,6 @@ jobs:
           gcloud config set account github-actions-deployer@ror-deployment-440909.iam.gserviceaccount.com
           gcloud config set project ror-deployment-440909
 
-      - name: Authenticate Docker to Artifact Registry
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-central1-docker.pkg.dev
-
       - name: Build Docker Image
         run: docker build -t gcr.io/ror-deployment-440909/ror-backend:$GITHUB_SHA .
 
